@@ -1,37 +1,31 @@
 /**
  * @module scenes
+ * 
  */
 
-//File name:            Menu
+//File name :           Exit
 //Author’s name:        Vishal Guleria (300813391), Vinay Bhardwaj (300825097) and Jagpreet Jattana
 //Date last Modified    April 8,2016
 //Program description   Group Project - Battle Truck
 //Revision History      Part 2
 
-
 module scenes {
     /**
-     * Menu Scene extends scenes.Scene superclass is used to
-     * create a custom menu for the THREEJS Game
+     * Instruction Scene extends scenes.Scene superclass is used to
+     * create a custom instruction for the THREEJS Game
      * 
-     * @class Menu
+     * @class Instruction
      * @extends scene.Scene
      * @param blocker {HTMLElement}
      * @param _stage {createjs.Stage}
      * @param _gameLabel {createjs.Text}
      * @param _startButton {createjs.Bitmap}
      */
-    export class Menu extends scenes.Scene {
+    export class Exit extends scenes.Scene {
         private _blocker: HTMLElement;
         private _stage: createjs.Stage;
-        private _gameLabel: createjs.Text;
-        private _companyLogo: createjs.Bitmap;
-        private _startButton: createjs.Bitmap;
-        private _exitButton: createjs.Bitmap;
-
+        private _exitPanel: createjs.Bitmap;
         private spotLight: SpotLight;
-
-
 
         /**
          * Empty Constructor - calls _initialize and start methods
@@ -67,13 +61,11 @@ module scenes {
             this._blocker = document.getElementById("blocker");
             this._blocker.style.display = "none";
 
-            // setup canvas for menu scene
+            // setup canvas for Instruction scene
             this._setupCanvas();
             // setup a stage on the canvas
             this._stage = new createjs.Stage(canvas);
             this._stage.enableMouseOver(20);
-
-
         }
 
         /**
@@ -101,13 +93,6 @@ module scenes {
             this.spotLight.name = "Spot Light";
             this.add(this.spotLight);
             console.log("Added spotLight to scene");
-
-        }
-
-        public sound(): void {
-            createjs.Sound.stop();
-            createjs.Sound.play("menu");
-
         }
 
 
@@ -121,84 +106,26 @@ module scenes {
          */
         public start(): void {
             // Scene changes for Physijs
-            this.name = "Menu Scene";
+            this.name = "Instruction Scene";
             this.setGravity(new THREE.Vector3(0, 0, 0));
+            
+            //Adding Instruction sound
+            createjs.Sound.stop();
+            createjs.Sound.play("gameOver");
 
-            this.sound();
-            // Add Game Label
-            this._gameLabel = new createjs.Text(
-                "Battle Truck",
-                "120px Algerian",
-                "#ffffff");
-            this._gameLabel.regX = this._gameLabel.getMeasuredWidth() * 0.5;
-            this._gameLabel.regY = this._gameLabel.getMeasuredLineHeight() * 0.5;
-            this._gameLabel.x = config.Screen.WIDTH * 0.5;
-            this._gameLabel.y = config.Screen.HEIGHT * 0.2;
-            this._stage.addChild(this._gameLabel);
-            console.log("Added Game Label to the scene");
 
             // Add Company Logo
-            this._companyLogo = new createjs.Bitmap(assets.getResult("CompanyLogo"));
-            this._companyLogo.regX = this._companyLogo.getBounds().width * 0.5;
-            this._companyLogo.regY = this._companyLogo.getBounds().height * 0.5;
-            this._companyLogo.x = config.Screen.WIDTH * 0.5;
-            this._companyLogo.y = (config.Screen.HEIGHT * 0.45);
-            this._stage.addChild(this._companyLogo);
-            console.log("Added CompanyLogo to the Scene");
+            this._exitPanel = new createjs.Bitmap(assets.getResult("ExitPanel"));
+            this._exitPanel.regX = this._exitPanel.getBounds().width * 0.5;
+            this._exitPanel.regY = this._exitPanel.getBounds().height * 0.5;
+            this._exitPanel.x = config.Screen.WIDTH * 0.5;
+            this._exitPanel.y = (config.Screen.HEIGHT * 0.5);
+            this._stage.addChild(this._exitPanel);
+            console.log("Added ExitPanel to the Scene");
 
-            // Add Start Button
-            this._startButton = new createjs.Bitmap(assets.getResult("StartButton"));
-            this._startButton.regX = this._startButton.getBounds().width * 0.5;
-            this._startButton.regY = this._startButton.getBounds().height * 0.5;
-            this._startButton.x = config.Screen.WIDTH * 0.25;
-            this._startButton.y = (config.Screen.HEIGHT * 0.6) + 100;
-            this._stage.addChild(this._startButton);
-            console.log("Added Start Button to the Scene");
-
-            // Add Instruction Button
-            this._exitButton = new createjs.Bitmap(assets.getResult("ExitButton"));
-            this._exitButton.regX = this._exitButton.getBounds().width * 0.5;
-            this._exitButton.regY = this._exitButton.getBounds().height * 0.5;
-            this._exitButton.x = config.Screen.WIDTH * 0.75;
-            this._exitButton.y = (config.Screen.HEIGHT * 0.6) + 100;
-            this._stage.addChild(this._exitButton);
-            console.log("Added ExitButton to the Scene");
-
-
-            this._startButton.on("mouseover", (event: createjs.MouseEvent) => {
-                event.target.alpha = 0.7;
-                
-            });
-
-            this._startButton.on("mouseout", (event: createjs.MouseEvent) => {
-                event.target.alpha = 1;
-            });
-
-            this._startButton.on("click", (event: createjs.MouseEvent) => {
-                
-                currentScene = config.Scene.INSTRUCTION1;
-                changeScene();
-            });
-
-            this._exitButton.on("mouseover", (event: createjs.MouseEvent) => {
-                event.target.alpha = 0.7;
-                
-            });
-
-            this._exitButton.on("mouseout", (event: createjs.MouseEvent) => {
-                event.target.alpha = 1;
-            });
-
-            this._exitButton.on("click", (event: createjs.MouseEvent) => {
-                
-                currentScene = config.Scene.EXIT;
-                changeScene();
-            });
 
             // Add Spot Light to the scene
             this.addSpotLight();
-
-
             camera.position.set(0, 0, -20);
             camera.lookAt(new Vector3(0, 0, 0));
         }
@@ -210,6 +137,7 @@ module scenes {
          * @return void
          */
         public update(): void {
+
 
             this._stage.update();
 

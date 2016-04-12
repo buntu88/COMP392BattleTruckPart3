@@ -1,14 +1,15 @@
+
+
+//File name :           Instruction1
+//Author’s name:        Vishal Guleria (300813391), Vinay Bhardwaj (300825097) and Jagpreet Jattana
+//Date last Modified    April 8,2016
+//Program description   Group Project - Battle Truck
+//Revision History      Part 3
+
 /**
  * @module scenes
  * 
  */
-
-//File name :           Instruction
-//Author’s name:        Vishal Guleria (300813391), Vinay Bhardwaj (300825097) and Jagpreet Jattana
-//Date last Modified    April 8,2016
-//Program description   Group Project - Battle Truck
-//Revision History      Part 2
-
 module scenes {
     /**
      * Instruction Scene extends scenes.Scene superclass is used to
@@ -21,19 +22,20 @@ module scenes {
      * @param _gameLabel {createjs.Text}
      * @param _startButton {createjs.Bitmap}
      */
-    export class Instruction extends scenes.Scene {
+    export class Instruction3 extends scenes.Scene {
         private _blocker: HTMLElement;
         private _stage: createjs.Stage;
         private _instructionPanel: createjs.Bitmap;
+        private _playButton: createjs.Bitmap;
         private _backButton: createjs.Bitmap;
-
+        private scoreLabel: createjs.Text;
+        private livesLabel: createjs.Text;
+        private velocity: Vector3;
+        private prevTime: number;
+        private clock: Clock;
 
         private spotLight: SpotLight;
 
-        private coinGeometry: Geometry;
-        private coinMaterial: Physijs.Material;
-        private coins: Physijs.ConcaveMesh[];
-        private coinCount: number;
 
         /**
          * Empty Constructor - calls _initialize and start methods
@@ -57,6 +59,7 @@ module scenes {
             canvas.style.position = "absolute";
         }
 
+
         /**
          * This method sets up default values for class member variables
          * and objects
@@ -75,7 +78,6 @@ module scenes {
             this._stage = new createjs.Stage(canvas);
             this._stage.enableMouseOver(20);
 
-            this.coinCount = 1;
         }
 
         /**
@@ -104,7 +106,29 @@ module scenes {
             this.add(this.spotLight);
             console.log("Added spotLight to scene");
         }
+        private setupScoreboard(): void {
+            // Add Lives Label
+            this.livesLabel = new createjs.Text(
+                "LIVES: " + livesValue,
+                "40px Algerian",
+                "#ffffff"
+            );
+            this.livesLabel.x = config.Screen.WIDTH * 0.1;
+            this.livesLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
+            this._stage.addChild(this.livesLabel);
+            console.log("Added Lives Label to stage");
 
+            // Add Score Label
+            this.scoreLabel = new createjs.Text(
+                "SCORE: " + scoreValue,
+                "40px Algerian",
+                "#ffffff"
+            );
+            this.scoreLabel.x = config.Screen.WIDTH * 0.8;
+            this.scoreLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
+            this._stage.addChild(this.scoreLabel);
+            console.log("Added Score Label to stage");
+        }
 
         // PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -115,10 +139,16 @@ module scenes {
          * @return void
          */
         public start(): void {
+            // setup the class context to use within events
+            var self = this;
+
+            // Set Up Scoreboard
+            this.setupScoreboard();
+
             // Scene changes for Physijs
-            this.name = "Instruction Scene";
+            this.name = "Instruction Scene 1";
             this.setGravity(new THREE.Vector3(0, 0, 0));
-            
+
             //Adding Instruction sound
             createjs.Sound.stop();
             createjs.Sound.play("instruction");
@@ -127,24 +157,45 @@ module scenes {
 
             console.log("Added InstructionPanel to the Scene");
             // Add Company Logo
-            this._instructionPanel = new createjs.Bitmap(assets.getResult("InstructionPanel"));
+            this._instructionPanel = new createjs.Bitmap(assets.getResult("InstructionPanel3"));
             this._instructionPanel.regX = this._instructionPanel.getBounds().width * 0.5;
             this._instructionPanel.regY = this._instructionPanel.getBounds().height * 0.5;
             this._instructionPanel.x = config.Screen.WIDTH * 0.5;
-            this._instructionPanel.y = (config.Screen.HEIGHT * 0.45);
+            this._instructionPanel.y = (config.Screen.HEIGHT * 0.5);
             this._stage.addChild(this._instructionPanel);
             console.log("Added InstructionPanel to the Scene");
 
             // Add Start Button
+            this._playButton = new createjs.Bitmap(assets.getResult("PlayButton"));
+            this._playButton.regX = this._playButton.getBounds().width * 0.5;
+            this._playButton.regY = this._playButton.getBounds().height * 0.5;
+            this._playButton.x = config.Screen.WIDTH * 0.25;
+            this._playButton.y = (config.Screen.HEIGHT * 0.9);
+            this._stage.addChild(this._playButton);
+            console.log("Added Start Button to the Scene");
+
+
+            // Add Back Button
             this._backButton = new createjs.Bitmap(assets.getResult("BackButton"));
             this._backButton.regX = this._backButton.getBounds().width * 0.5;
             this._backButton.regY = this._backButton.getBounds().height * 0.5;
-            this._backButton.x = config.Screen.WIDTH * 0.5;
+            this._backButton.x = config.Screen.WIDTH * 0.75;
             this._backButton.y = (config.Screen.HEIGHT * 0.9);
             this._stage.addChild(this._backButton);
             console.log("Added Start Button to the Scene");
 
+            this._playButton.on("mouseover", (event: createjs.MouseEvent) => {
+                event.target.alpha = 0.7;
+            });
 
+            this._playButton.on("mouseout", (event: createjs.MouseEvent) => {
+                event.target.alpha = 1;
+            });
+
+            this._playButton.on("click", (event: createjs.MouseEvent) => {
+                currentScene = config.Scene.PLAY3;
+                changeScene();
+            });
 
             this._backButton.on("mouseover", (event: createjs.MouseEvent) => {
                 event.target.alpha = 0.7;
@@ -158,8 +209,6 @@ module scenes {
                 currentScene = config.Scene.MENU;
                 changeScene();
             });
-
-
             // Add Spot Light to the scene
             this.addSpotLight();
 
@@ -190,7 +239,12 @@ module scenes {
          * @return void
          */
         public resize(): void {
-            this._setupCanvas();
+            canvas.style.width = "100%";
+            this.livesLabel.x = config.Screen.WIDTH * 0.1;
+            this.livesLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
+            this.scoreLabel.x = config.Screen.WIDTH * 0.8;
+            this.scoreLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
+            this._stage.update();
         }
     }
 }

@@ -1,23 +1,20 @@
-/**
- * @module scenes
- *
- */
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-//File name :           Instruction
+
+
+//File name :           Instruction1
 //Author’s name:        Vishal Guleria (300813391), Vinay Bhardwaj (300825097) and Jagpreet Jattana
 //Date last Modified    April 8,2016
 //Program description   Group Project - Battle Truck
-//Revision History      Part 2
-var scenes;
-(function (scenes) {
+//Revision History      Part 3
+
+/**
+ * @module scenes
+ * 
+ */
+module scenes {
     /**
      * Instruction Scene extends scenes.Scene superclass is used to
      * create a custom instruction for the THREEJS Game
-     *
+     * 
      * @class Instruction
      * @extends scene.Scene
      * @param blocker {HTMLElement}
@@ -25,51 +22,71 @@ var scenes;
      * @param _gameLabel {createjs.Text}
      * @param _startButton {createjs.Bitmap}
      */
-    var Instruction = (function (_super) {
-        __extends(Instruction, _super);
+    export class Instruction2 extends scenes.Scene {
+        private _blocker: HTMLElement;
+        private _stage: createjs.Stage;
+        private _instructionPanel: createjs.Bitmap;
+        private _playButton: createjs.Bitmap;
+        private _backButton: createjs.Bitmap;
+        private scoreLabel: createjs.Text;
+        private livesLabel: createjs.Text;
+        private velocity: Vector3;
+        private prevTime: number;
+        private clock: Clock;
+
+        private spotLight: SpotLight;
+
+
         /**
          * Empty Constructor - calls _initialize and start methods
-         *
+         * 
          * @constructor
          */
-        function Instruction() {
-            _super.call(this);
+        constructor() {
+            super();
+
             this._initialize();
             this.start();
         }
+
         // PRIVATE METHODS ++++++++++++++++++++++++++++++++++++++++++++++
-        Instruction.prototype._setupCanvas = function () {
+
+        private _setupCanvas(): void {
             canvas.style.width = "100%";
             canvas.setAttribute("height", config.Screen.HEIGHT.toString());
             canvas.style.backgroundColor = "#000000";
             canvas.style.opacity = "0.5";
             canvas.style.position = "absolute";
-        };
+        }
+
+
         /**
          * This method sets up default values for class member variables
          * and objects
-         *
+         * 
          * @method _initialize
          * @return void
          */
-        Instruction.prototype._initialize = function () {
+        private _initialize(): void {
             // Create to HTMLElements
             this._blocker = document.getElementById("blocker");
             this._blocker.style.display = "none";
+
             // setup canvas for Instruction scene
             this._setupCanvas();
             // setup a stage on the canvas
             this._stage = new createjs.Stage(canvas);
             this._stage.enableMouseOver(20);
-            this.coinCount = 1;
-        };
+
+        }
+
         /**
          * Add a spotLight to the scene
-         *
+         * 
          * @method addSpotLight
          * @return void
          */
-        Instruction.prototype.addSpotLight = function () {
+        private addSpotLight(): void {
             // Spot Light
             this.spotLight = new SpotLight(0xffffff);
             this.spotLight.position.set(20, 40, -15);
@@ -88,75 +105,145 @@ var scenes;
             this.spotLight.name = "Spot Light";
             this.add(this.spotLight);
             console.log("Added spotLight to scene");
-        };
+        }
+        private setupScoreboard(): void {
+            // Add Lives Label
+            this.livesLabel = new createjs.Text(
+                "LIVES: " + livesValue,
+                "40px Algerian",
+                "#ffffff"
+            );
+            this.livesLabel.x = config.Screen.WIDTH * 0.1;
+            this.livesLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
+            this._stage.addChild(this.livesLabel);
+            console.log("Added Lives Label to stage");
+
+            // Add Score Label
+            this.scoreLabel = new createjs.Text(
+                "SCORE: " + scoreValue,
+                "40px Algerian",
+                "#ffffff"
+            );
+            this.scoreLabel.x = config.Screen.WIDTH * 0.8;
+            this.scoreLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
+            this._stage.addChild(this.scoreLabel);
+            console.log("Added Score Label to stage");
+        }
+
         // PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++++++++++
+
         /**
          * The start method is the main method for the scene class
-         *
+         * 
          * @method start
          * @return void
          */
-        Instruction.prototype.start = function () {
+        public start(): void {
+            // setup the class context to use within events
+            var self = this;
+
+            // Set Up Scoreboard
+            this.setupScoreboard();
+
             // Scene changes for Physijs
-            this.name = "Instruction Scene";
+            this.name = "Instruction Scene 1";
             this.setGravity(new THREE.Vector3(0, 0, 0));
+
             //Adding Instruction sound
             createjs.Sound.stop();
             createjs.Sound.play("instruction");
+
+
+
             console.log("Added InstructionPanel to the Scene");
             // Add Company Logo
-            this._instructionPanel = new createjs.Bitmap(assets.getResult("InstructionPanel"));
+            this._instructionPanel = new createjs.Bitmap(assets.getResult("InstructionPanel2"));
             this._instructionPanel.regX = this._instructionPanel.getBounds().width * 0.5;
             this._instructionPanel.regY = this._instructionPanel.getBounds().height * 0.5;
             this._instructionPanel.x = config.Screen.WIDTH * 0.5;
-            this._instructionPanel.y = (config.Screen.HEIGHT * 0.45);
+            this._instructionPanel.y = (config.Screen.HEIGHT * 0.5);
             this._stage.addChild(this._instructionPanel);
             console.log("Added InstructionPanel to the Scene");
+
             // Add Start Button
+            this._playButton = new createjs.Bitmap(assets.getResult("PlayButton"));
+            this._playButton.regX = this._playButton.getBounds().width * 0.5;
+            this._playButton.regY = this._playButton.getBounds().height * 0.5;
+            this._playButton.x = config.Screen.WIDTH * 0.25;
+            this._playButton.y = (config.Screen.HEIGHT * 0.9);
+            this._stage.addChild(this._playButton);
+            console.log("Added Start Button to the Scene");
+
+            // Add Back Button
             this._backButton = new createjs.Bitmap(assets.getResult("BackButton"));
             this._backButton.regX = this._backButton.getBounds().width * 0.5;
             this._backButton.regY = this._backButton.getBounds().height * 0.5;
-            this._backButton.x = config.Screen.WIDTH * 0.5;
+            this._backButton.x = config.Screen.WIDTH * 0.75;
             this._backButton.y = (config.Screen.HEIGHT * 0.9);
             this._stage.addChild(this._backButton);
             console.log("Added Start Button to the Scene");
-            this._backButton.on("mouseover", function (event) {
+
+            this._playButton.on("mouseover", (event: createjs.MouseEvent) => {
                 event.target.alpha = 0.7;
             });
-            this._backButton.on("mouseout", function (event) {
+
+            this._playButton.on("mouseout", (event: createjs.MouseEvent) => {
                 event.target.alpha = 1;
             });
-            this._backButton.on("click", function (event) {
+
+            this._playButton.on("click", (event: createjs.MouseEvent) => {
+                currentScene = config.Scene.PLAY2;
+                changeScene();
+            });
+            this._backButton.on("mouseover", (event: createjs.MouseEvent) => {
+                event.target.alpha = 0.7;
+            });
+
+            this._backButton.on("mouseout", (event: createjs.MouseEvent) => {
+                event.target.alpha = 1;
+            });
+
+            this._backButton.on("click", (event: createjs.MouseEvent) => {
                 currentScene = config.Scene.MENU;
                 changeScene();
             });
+
             // Add Spot Light to the scene
             this.addSpotLight();
+
+
+
             camera.position.set(0, 0, -20);
             camera.lookAt(new Vector3(0, 0, 0));
-        };
+        }
+
         /**
          * The update method updates the animation loop and other objects
-         *
+         * 
          * @method update
          * @return void
          */
-        Instruction.prototype.update = function () {
+        public update(): void {
+
+
             this._stage.update();
+
             this.simulate();
-        };
+        }
+
         /**
          * The resize method is a procedure that sets variables and objects on screen resize
-         *
+         * 
          * @method resize
          * @return void
          */
-        Instruction.prototype.resize = function () {
-            this._setupCanvas();
-        };
-        return Instruction;
-    }(scenes.Scene));
-    scenes.Instruction = Instruction;
-})(scenes || (scenes = {}));
-
-//# sourceMappingURL=instruction.js.map
+        public resize(): void {
+            canvas.style.width = "100%";
+            this.livesLabel.x = config.Screen.WIDTH * 0.1;
+            this.livesLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
+            this.scoreLabel.x = config.Screen.WIDTH * 0.8;
+            this.scoreLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
+            this._stage.update();
+        }
+    }
+}

@@ -6,7 +6,7 @@
 //Author’s name:        Vishal Guleria (300813391), Vinay Bhardwaj (300825097) and Jagpreet Jattana
 //Date last Modified    April 8,2016
 //Program description   Group Project - Battle Truck
-//Revision History      Part 2
+//Revision History      Part 3
 
 module scenes {
     /**
@@ -22,21 +22,17 @@ module scenes {
         private _scoreLabel: createjs.Text;
         private _highScoreLabel: createjs.Text;
         private _restartButton: createjs.Bitmap;
-        
+
         private spotLight: SpotLight;
-        
+
         private groundGeometry: CubeGeometry;
         private groundPhysicsMaterial: Physijs.Material;
         private groundMaterial: PhongMaterial;
         private ground: Physijs.Mesh;
         private groundTexture: Texture;
         private groundTextureNormal: Texture;
-        
-        private coinGeometry: Geometry;
-        private coinMaterial: Physijs.Material;
-        private coins: Physijs.ConcaveMesh[];
-        private coinCount: number;
-        
+
+
         /**
          * Empty Contructor
          * 
@@ -80,8 +76,6 @@ module scenes {
             // setup a stage on the canvas
             this._stage = new createjs.Stage(canvas);
             this._stage.enableMouseOver(20);
-            
-            this.coinCount = 20;
         }
 
         /**
@@ -141,48 +135,7 @@ module scenes {
             this.add(this.ground);
             console.log("Added Ground to scene");
         }
-        
-        // /**
-        //  * This method adds a coin to the scene
-        //  * 
-        //  * @method addCoinMesh
-        //  * @return void
-        //  */
-        // private addCoinMesh(): void {
-        //     var self = this;
 
-        //     this.coins = new Array<Physijs.ConvexMesh>(); // Instantiate a convex mesh array
-
-        //     var coinLoader = new THREE.JSONLoader().load("../../Assets/imported/coin.json", function(geometry: THREE.Geometry) {
-        //         var phongMaterial = new PhongMaterial({ color: 0xE7AB32 });
-        //         phongMaterial.emissive = new THREE.Color(0xE7AB32);
-
-        //         var coinMaterial = Physijs.createMaterial((phongMaterial), 0.4, 0.6);
-
-        //         for (var count: number = 0; count < self.coinCount; count++) {
-        //             self.coins[count] = new Physijs.ConvexMesh(geometry, coinMaterial);
-        //             self.coins[count].receiveShadow = true;
-        //             self.coins[count].castShadow = true;
-        //             self.coins[count].name = "Coin";
-        //             self.setCoinPosition(self.coins[count]);
-        //             console.log("Added Coin " + count + " to the Scene");
-        //         }
-        //     });
-        // }
-        
-        // /**
-        //  * This method randomly sets the coin object's position
-        //  * 
-        //  * @method setCoinPosition
-        //  * @return void
-        //  */
-        // private setCoinPosition(coin: Physijs.ConvexMesh): void {
-        //     var randomPointX: number = Math.floor(Math.random() * 20) - 10;
-        //     var randomPointY: number = Math.floor(Math.random() * 30) + 1;
-        //     var randomPointZ: number = Math.floor(Math.random() * 20) - 10;
-        //     coin.position.set(randomPointX, randomPointY, randomPointZ);
-        //     this.add(coin);
-        // }
 
         // PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++++
 
@@ -198,15 +151,15 @@ module scenes {
             this.fog = new THREE.Fog(0xffffff, 0, 750);
             this.setGravity(new THREE.Vector3(0, -10, 0));
             var self = this;
-            
-                        createjs.Sound.stop();
+
+            createjs.Sound.stop();
             createjs.Sound.play("gameOver");
-            
+
             //check for high score changes
-            if(scoreValue > highScoreValue) {
+            if (scoreValue > highScoreValue) {
                 highScoreValue = scoreValue;
             }
-            
+
             this._gameOverLabel = new createjs.Text(
                 "GAME OVER",
                 "80px Algerian",
@@ -216,7 +169,7 @@ module scenes {
             this._gameOverLabel.x = config.Screen.WIDTH * 0.5;
             this._gameOverLabel.y = (config.Screen.HEIGHT * 0.5) - 100;
             this._stage.addChild(this._gameOverLabel);
-            
+
             this._scoreLabel = new createjs.Text(
                 "Your Score: " + scoreValue,
                 "40px Algerian",
@@ -226,7 +179,7 @@ module scenes {
             this._scoreLabel.x = config.Screen.WIDTH * 0.5;
             this._scoreLabel.y = config.Screen.HEIGHT * 0.5;
             this._stage.addChild(this._scoreLabel);
-            
+
             this._highScoreLabel = new createjs.Text(
                 "High Score: " + highScoreValue,
                 "40px Algerian",
@@ -256,28 +209,15 @@ module scenes {
                 currentScene = config.Scene.PLAY1;
                 changeScene();
             });
-            
+
             // Add Spot Light to the scene
             this.addSpotLight();
 
             // Ground Object
             this.addGround();
-            
-            // // // Add custom coin imported from Blender
-            // // this.addCoinMesh();
-            
-            // this.ground.addEventListener('collision', function(eventObject){
-            //     if (eventObject.name === "Coin") {
-            //         var coinSound: createjs.AbstractSoundInstance = createjs.Sound.play("coin");
-            //         coinSound.volume = 0.1;
-                    
-            //         self.remove(eventObject);
-            //         self.setCoinPosition(eventObject);
-            //     }
-            // });
-            
+
             camera.position.set(0, 10, -20);
-            camera.lookAt(new Vector3(0, 0, 0));  
+            camera.lookAt(new Vector3(0, 0, 0));
         }
 
         /**
@@ -287,13 +227,10 @@ module scenes {
          * @return void
          */
         public update(): void {
-            //  this.coins.forEach(coin => {
-            //     coin.setAngularFactor(new Vector3(0, 0, 0));
-            //     coin.setAngularVelocity(new Vector3(0, 1, 0));
-            // });
-            
+
+
             this._stage.update();
-            
+
             this.simulate();
         }
 

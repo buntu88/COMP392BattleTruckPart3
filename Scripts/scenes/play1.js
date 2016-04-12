@@ -62,7 +62,6 @@ var scenes;
             this.blocker.style.display = "block";
             // setup canvas for menu scene
             this._setupCanvas();
-            this.coinCount = 10;
             this.prevTime = 0;
             this.stage = new createjs.Stage(canvas);
             this.velocity = new Vector3(0, 0, 0);
@@ -80,13 +79,13 @@ var scenes;
          */
         Play1.prototype.setupScoreboard = function () {
             // Add Lives Label
-            this.livesLabel = new createjs.Text("LIVES: " + livesValue, "40px Consolas", "#ffffff");
+            this.livesLabel = new createjs.Text("LIVES: " + livesValue, "40px Algerian", "#ffffff");
             this.livesLabel.x = config.Screen.WIDTH * 0.1;
             this.livesLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
             this.stage.addChild(this.livesLabel);
             console.log("Added Lives Label to stage");
             // Add Score Label
-            this.scoreLabel = new createjs.Text("SCORE: " + scoreValue, "40px Consolas", "#ffffff");
+            this.scoreLabel = new createjs.Text("SCORE: " + scoreValue, "40px Algerian", "#ffffff");
             this.scoreLabel.x = config.Screen.WIDTH * 0.8;
             this.scoreLabel.y = (config.Screen.HEIGHT * 0.15) * 0.20;
             this.stage.addChild(this.scoreLabel);
@@ -184,7 +183,7 @@ var scenes;
             this.wallPhysicsMaterial = Physijs.createMaterial(this.wallMaterial, 0, 0);
             this.boundary3 = new Physijs.ConvexMesh(this.boundary3Geometry, this.wallPhysicsMaterial, 0);
             this.boundary3.receiveShadow = true;
-            this.boundary3.name = "Maze";
+            this.boundary3.name = "CheatMaze";
             this.boundary3.position.set(0, 5, -49);
             this.boundary3.rotation.set(0, 1.570796, 0);
             this.add(this.boundary3);
@@ -773,13 +772,6 @@ var scenes;
                     self.isGrounded = true;
                     createjs.Sound.play("land");
                 }
-                if (eventObject.name === "Coin") {
-                    createjs.Sound.play("coin");
-                    self.remove(eventObject);
-                    self.setCoinPosition(eventObject);
-                    scoreValue += 100;
-                    self.scoreLabel.text = "SCORE: " + scoreValue;
-                }
                 if (eventObject.name === "Maze") {
                     createjs.Sound.play("land");
                     livesValue--;
@@ -796,6 +788,18 @@ var scenes;
                         // otherwise reset my player and update Lives
                         self.livesLabel.text = "LIVES: " + livesValue;
                     }
+                }
+                if (eventObject.name === "CheatMaze") {
+                    createjs.Sound.play("land");
+                    scoreValue += 500;
+                    self.scoreLabel.text = "SCORE: " + scoreValue;
+                    // Exit Pointer Lock
+                    document.exitPointerLock();
+                    self.children = []; // an attempt to clean up
+                    self.player.remove(camera);
+                    // Play the Game Over Scene
+                    currentScene = config.Scene.INSTRUCTION2;
+                    changeScene();
                 }
                 if (eventObject.name === "DeathPlane") {
                     createjs.Sound.play("hit");
@@ -819,12 +823,9 @@ var scenes;
                     }
                 }
             }.bind(self));
-            // create parent-child relationship with camera and player
+            camera.rotation.set(-0.45, 0, 0);
+            camera.position.set(0, 15, 10);
             this.player.add(camera);
-            //this.add(camera)
-            camera.rotation.set(-0.22, 0, 0);
-            camera.position.set(0, 8, 5);
-            this.simulate();
         };
         /**
          * Camera Look function
