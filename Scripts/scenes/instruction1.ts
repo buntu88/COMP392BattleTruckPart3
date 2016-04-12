@@ -68,6 +68,11 @@ module scenes {
          * @return void
          */
         private _initialize(): void {
+            // initialize score and lives values
+            scoreValue = 0;
+            livesValue = 5;
+            console.log("Initialize score and lives values");
+
             // Create to HTMLElements
             this._blocker = document.getElementById("blocker");
             this._blocker.style.display = "none";

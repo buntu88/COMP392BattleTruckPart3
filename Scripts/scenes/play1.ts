@@ -86,6 +86,9 @@ module scenes {
         private wallTexture: Texture;
         private wallTextureNormal: Texture;
 
+        private ewallPhysicsMaterial: Physijs.Material;
+        private ewallMaterial: PhongMaterial;
+
         private boundary1Geometry: CubeGeometry;
         private boundary1: Physijs.Mesh;
 
@@ -212,10 +215,7 @@ module scenes {
          * @returns void
          */
         private _initialize(): void {
-            // initialize score and lives values
-            scoreValue = 0;
-            livesValue = 5;
-            console.log("Initialize score and lives values");
+
 
             // Create to HTMLElements
             this.blocker = document.getElementById("blocker");
@@ -342,6 +342,9 @@ module scenes {
             this.wallMaterial.map = this.wallTexture;
             this.wallMaterial.bumpMap = this.wallTextureNormal;
             this.wallMaterial.bumpScale = 0.2;
+            
+            this.ewallMaterial = new PhongMaterial({color: 0x000000});
+            
 
             this.boundary1Geometry = new BoxGeometry(2, 10, 100);
             this.wallPhysicsMaterial = Physijs.createMaterial(this.wallMaterial, 0, 0);
@@ -525,10 +528,10 @@ module scenes {
         private addIW9(): void {
 
             this.iw9Geometry = new BoxGeometry(2, 10, 10);
-            this.wallPhysicsMaterial = Physijs.createMaterial(this.wallMaterial, 0, 0);
+            this.wallPhysicsMaterial = Physijs.createMaterial(this.ewallMaterial, 0, 0);
             this.iw9 = new Physijs.ConvexMesh(this.iw9Geometry, this.wallPhysicsMaterial, 0);
             this.iw9.receiveShadow = true;
-            this.iw9.name = "Maze";
+            this.iw9.name = "CheatMaze";
             this.iw9.position.set(-43, 5, -3);
             this.iw9.rotation.set(0, 1.570796, 0);
             this.add(this.iw9);
@@ -915,42 +918,42 @@ module scenes {
                 var time: number = performance.now();
                 var delta: number = (time - this.prevTime) / 1000;
 
+
                 var direction = new Vector3(0, 0, 0);
                 if (this.keyboardControls.moveForward) {
-                    this.velocity.z -= 1000.0 * delta;
+                    this.velocity.z -= 600.0 * delta;
                 }
                 if (this.keyboardControls.moveLeft) {
                     this.velocity.x -= 400.0 * delta;
                 }
                 if (this.keyboardControls.moveBackward) {
-                    this.velocity.z += 1000.0 * delta;
+                    this.velocity.z += 600.0 * delta;
                 }
                 if (this.keyboardControls.moveRight) {
                     this.velocity.x += 400.0 * delta;
                 }
 
                 if (this.isGrounded) {
-
                     if (this.keyboardControls.jump) {
                         this.velocity.y += 4000.0 * delta;
                         if (this.player.position.y > 4) {
                             this.isGrounded = false;
-                            createjs.Sound.play("jump");
                         }
                     }
+                }
 
-                    this.player.setDamping(0.7, 0.1);
-                    // Changing player's rotation
-                    this.player.setAngularVelocity(new Vector3(0, this.mouseControls.yaw, 0));
-                    direction.addVectors(direction, this.velocity);
-                    direction.applyQuaternion(this.player.quaternion);
-                    if (Math.abs(this.player.getLinearVelocity().x) < 20 && Math.abs(this.player.getLinearVelocity().y) < 10) {
-                        this.player.applyCentralForce(direction);
-                    }
+                this.player.setDamping(0.7, 0.1);
+                // Changing player's rotation
+                this.player.setAngularVelocity(new Vector3(0, this.mouseControls.yaw, 0));
+                direction.addVectors(direction, this.velocity);
+                direction.applyQuaternion(this.player.quaternion);
+                if (Math.abs(this.player.getLinearVelocity().x) < 20 && Math.abs(this.player.getLinearVelocity().y) < 10) {
+                    this.player.applyCentralForce(direction);
+                }
 
-                    this.cameraLook();
+                this.cameraLook();
 
-                } // isGrounded ends
+                // isGrounded ends
 
                 //reset Pitch and Yaw
                 this.mouseControls.pitch = 0;
@@ -962,8 +965,6 @@ module scenes {
                 this.player.setAngularVelocity(new Vector3(0, 0, 0));
             }
         }
-
-
         // PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++++++
 
         /**
@@ -973,8 +974,10 @@ module scenes {
          * @return void
          */
         public start(): void {
+            createjs.Sound.stop();
             // setup the class context to use within events
             var self = this;
+
 
             // Set Up Scoreboard
             this.setupScoreboard();
@@ -1050,7 +1053,7 @@ module scenes {
             this.addIW7();
             this.addIW8();
             this.addIW8a();
-            // this.addIW9();
+            this.addIW9();
             this.addIW10();
             this.addIW11();
             this.addIW12();
@@ -1071,7 +1074,7 @@ module scenes {
 
                 if (eventObject.name === "Maze") {
 
-                    createjs.Sound.play("land");
+                    createjs.Sound.play("hit");
                     livesValue--;
                     if (livesValue <= 0) {
                         // Exit Pointer Lock
@@ -1091,17 +1094,18 @@ module scenes {
 
                 if (eventObject.name === "CheatMaze") {
 
-                    createjs.Sound.play("land");
+                    createjs.Sound.play("hit");
                     scoreValue += 500;
                     self.scoreLabel.text = "SCORE: " + scoreValue;
-                        // Exit Pointer Lock
-                        document.exitPointerLock();
-                        self.children = []; // an attempt to clean up
-                        self.player.remove(camera);
+                    self.livesLabel.text = "LIVES: " + livesValue;
+                    // Exit Pointer Lock
+                    document.exitPointerLock();
+                    self.children = []; // an attempt to clean up
+                    self.player.remove(camera);
 
-                        // Play the Game Over Scene
-                        currentScene = config.Scene.INSTRUCTION2;
-                        changeScene();
+                    // Play the Game Over Scene
+                    currentScene = config.Scene.INSTRUCTION2;
+                    changeScene();
 
                 }
 

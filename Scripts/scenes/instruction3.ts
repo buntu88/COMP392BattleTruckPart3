@@ -142,6 +142,10 @@ module scenes {
             // setup the class context to use within events
             var self = this;
 
+
+
+
+
             // Set Up Scoreboard
             this.setupScoreboard();
 
@@ -151,6 +155,7 @@ module scenes {
 
             //Adding Instruction sound
             createjs.Sound.stop();
+            createjs.Sound.play("cheers");
             createjs.Sound.play("instruction");
 
 
@@ -174,7 +179,6 @@ module scenes {
             this._stage.addChild(this._playButton);
             console.log("Added Start Button to the Scene");
 
-
             // Add Back Button
             this._backButton = new createjs.Bitmap(assets.getResult("BackButton"));
             this._backButton.regX = this._backButton.getBounds().width * 0.5;
@@ -193,10 +197,11 @@ module scenes {
             });
 
             this._playButton.on("click", (event: createjs.MouseEvent) => {
+                self.scoreLabel.text = "SCORE: " + scoreValue;
+                self.livesLabel.text = "LIVES: " + livesValue;
                 currentScene = config.Scene.PLAY3;
                 changeScene();
             });
-
             this._backButton.on("mouseover", (event: createjs.MouseEvent) => {
                 event.target.alpha = 0.7;
             });
@@ -206,9 +211,11 @@ module scenes {
             });
 
             this._backButton.on("click", (event: createjs.MouseEvent) => {
+
                 currentScene = config.Scene.MENU;
                 changeScene();
             });
+
             // Add Spot Light to the scene
             this.addSpotLight();
 

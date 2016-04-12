@@ -151,6 +151,7 @@ module scenes {
 
             //Adding Instruction sound
             createjs.Sound.stop();
+            createjs.Sound.play("cheers");
             createjs.Sound.play("instruction");
 
 
@@ -192,6 +193,8 @@ module scenes {
             });
 
             this._playButton.on("click", (event: createjs.MouseEvent) => {
+                self.scoreLabel.text = "SCORE: " + scoreValue;
+                self.livesLabel.text = "LIVES: " + livesValue;
                 currentScene = config.Scene.PLAY2;
                 changeScene();
             });
@@ -204,6 +207,7 @@ module scenes {
             });
 
             this._backButton.on("click", (event: createjs.MouseEvent) => {
+
                 currentScene = config.Scene.MENU;
                 changeScene();
             });

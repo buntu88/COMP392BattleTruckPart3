@@ -53,6 +53,10 @@ var scenes;
          * @return void
          */
         Instruction1.prototype._initialize = function () {
+            // initialize score and lives values
+            scoreValue = 0;
+            livesValue = 5;
+            console.log("Initialize score and lives values");
             // Create to HTMLElements
             this._blocker = document.getElementById("blocker");
             this._blocker.style.display = "none";

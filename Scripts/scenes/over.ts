@@ -160,15 +160,31 @@ module scenes {
                 highScoreValue = scoreValue;
             }
 
-            this._gameOverLabel = new createjs.Text(
-                "GAME OVER",
-                "80px Algerian",
-                "#ffffff");
-            this._gameOverLabel.regX = this._gameOverLabel.getMeasuredWidth() * 0.5;
-            this._gameOverLabel.regY = this._gameOverLabel.getMeasuredLineHeight() * 0.5;
-            this._gameOverLabel.x = config.Screen.WIDTH * 0.5;
-            this._gameOverLabel.y = (config.Screen.HEIGHT * 0.5) - 100;
-            this._stage.addChild(this._gameOverLabel);
+            if (livesValue > 0) {
+                createjs.Sound.play("cheers");
+                this._gameOverLabel = new createjs.Text(
+                    "You WIN!!!",
+                    "80px Algerian",
+                    "#ffffff");
+                this._gameOverLabel.regX = this._gameOverLabel.getMeasuredWidth() * 0.5;
+                this._gameOverLabel.regY = this._gameOverLabel.getMeasuredLineHeight() * 0.5;
+                this._gameOverLabel.x = config.Screen.WIDTH * 0.5;
+                this._gameOverLabel.y = (config.Screen.HEIGHT * 0.5) - 100;
+                this._stage.addChild(this._gameOverLabel);
+            }
+            else {
+                this._gameOverLabel = new createjs.Text(
+                    "GAME OVER",
+                    "80px Algerian",
+                    "#ffffff");
+                this._gameOverLabel.regX = this._gameOverLabel.getMeasuredWidth() * 0.5;
+                this._gameOverLabel.regY = this._gameOverLabel.getMeasuredLineHeight() * 0.5;
+                this._gameOverLabel.x = config.Screen.WIDTH * 0.5;
+                this._gameOverLabel.y = (config.Screen.HEIGHT * 0.5) - 100;
+                this._stage.addChild(this._gameOverLabel);
+            }
+
+
 
             this._scoreLabel = new createjs.Text(
                 "Your Score: " + scoreValue,
@@ -206,6 +222,8 @@ module scenes {
             });
 
             this._restartButton.on("click", (event: createjs.MouseEvent) => {
+                scoreValue = 0;
+                livesValue = 5;
                 currentScene = config.Scene.PLAY1;
                 changeScene();
             });

@@ -56,8 +56,10 @@ var stats;
 var canvas;
 var assets;
 var manifest = [
-    { id: "land", src: "../../Assets/audio/Land.wav" },
-    { id: "hit", src: "../../Assets/audio/hit.wav" },
+    { id: "land", src: "../../Assets/audio/turck_start.mp3" },
+    { id: "hit", src: "../../Assets/audio/crash.mp3" },
+    { id: "cheers", src: "../../Assets/audio/cheers.mp3" },
+    { id: "mine", src: "../../Assets/audio/Mine.mp3" },
     { id: "jump", src: "../../Assets/audio/Jump.wav" },
     { id: "menu", src: "../../Assets/audio/menu.mp3" },
     { id: "instruction", src: "../../Assets/audio/instructions.mp3" },

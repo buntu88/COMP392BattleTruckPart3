@@ -119,6 +119,7 @@ var scenes;
             this.setGravity(new THREE.Vector3(0, 0, 0));
             //Adding Instruction sound
             createjs.Sound.stop();
+            createjs.Sound.play("cheers");
             createjs.Sound.play("instruction");
             console.log("Added InstructionPanel to the Scene");
             // Add Company Logo
@@ -152,7 +153,19 @@ var scenes;
                 event.target.alpha = 1;
             });
             this._playButton.on("click", function (event) {
+                self.scoreLabel.text = "SCORE: " + scoreValue;
+                self.livesLabel.text = "LIVES: " + livesValue;
                 currentScene = config.Scene.PLAY2;
+                changeScene();
+            });
+            this._backButton.on("mouseover", function (event) {
+                event.target.alpha = 0.7;
+            });
+            this._backButton.on("mouseout", function (event) {
+                event.target.alpha = 1;
+            });
+            this._backButton.on("click", function (event) {
+                currentScene = config.Scene.MENU;
                 changeScene();
             });
             // Add Spot Light to the scene
