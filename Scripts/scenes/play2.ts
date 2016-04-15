@@ -54,6 +54,9 @@ module scenes {
         private bridge8Geometry: CubeGeometry;
         private bridge9Geometry: CubeGeometry;
         private bridge10Geometry: CubeGeometry;
+        private bridge11Geometry: CubeGeometry;
+        private bridge12Geometry: CubeGeometry;
+        private bridge13Geometry: CubeGeometry;
 
         private bridge1: Physijs.Mesh;
         private bridge2: Physijs.Mesh;
@@ -65,6 +68,11 @@ module scenes {
         private bridge8: Physijs.Mesh;
         private bridge9: Physijs.Mesh;
         private bridge10: Physijs.Mesh;
+        private bridge11: Physijs.Mesh;
+        private bridge12: Physijs.Mesh;
+        private bridge13: Physijs.Mesh;
+        private bridge14: Physijs.Mesh;
+        private bridge15: Physijs.Mesh;
 
         private frontMaterial: PhongMaterial;
 
@@ -303,24 +311,25 @@ module scenes {
             this.breakLightTexture.repeat.set(1, 1);
 
             // Universal Tire Object
-            this.playersGeometry = new SphereGeometry(0.5, 32, 32);
-            this.playerMaterial = Physijs.createMaterial(new PhongMaterial({ color: 0x000000 }), 0.4, 0);
-            this.player = new Physijs.SphereMesh(this.playersGeometry, this.playerMaterial, 1);
-            this.player.position.set(-0.06, 10, -38.9);
-            this.player.rotation.set(0, 3.14159, 0);
-            this.player.receiveShadow = true;
-            this.player.castShadow = true;
-            this.player.name = "Player";
+            // this.playersGeometry = new SphereGeometry(0.5,20, 20);
+            // this.playerMaterial = Physijs.createMaterial(new PhongMaterial({ color: 0x000000 }), 0.4, 0);
+            // this.player = new Physijs.SphereMesh(this.playersGeometry, this.playerMaterial, 1);
+            // this.player.position.set(0, 0, -70);
+            // this.player.rotation.set(0, 3.14159, 0);
+            // this.player.receiveShadow = true;
+            // this.player.castShadow = true;
+            // this.player.name = "Player";
 
             // Truck Body Object
             this.playerGeometry1 = new BoxGeometry(5, 5, 5);
             this.playerMaterial1 = Physijs.createMaterial(this.frontMaterial, 0.4, 0);
             this.player1 = new Physijs.BoxMesh(this.playerGeometry1, this.playerMaterial1, 1);
-            this.player1.position.set(0, 2.5, 1.5);
+            this.player1.position.set(0, 10, -100);
+            this.player1.rotation.set(0, 3.14159, 0);
             this.player1.receiveShadow = true;
             this.player1.castShadow = true;
             this.player1.name = "Player2";
-            this.player.add(this.player1);
+            //this.player.add(this.player1);
 
             // Truck Bonet Object
             this.playerGeometrya = new BoxGeometry(5, 3, 3);
@@ -373,9 +382,8 @@ module scenes {
             this.player1.add(this.playerd);
             console.log("Added Player1 to Scene");
 
-
             // Truck Break lights Object
-            this.playerGeometrye = new BoxGeometry(1, .5, 0.01);
+            this.playerGeometrye = new BoxGeometry(1, 0.5, 0.01);
             this.playerMateriale = Physijs.createMaterial(new PhongMaterial({ map: this.breakLightTexture }), 0.4, 0);
 
             this.playere = new Physijs.BoxMesh(this.playerGeometrye, this.playerMateriale, 1);
@@ -393,7 +401,7 @@ module scenes {
             this.playerf.name = "Player2";
             this.player1.add(this.playerf);
             console.log("Added Player1 to Scene");
-            this.add(this.player);
+            this.add(this.player1);
 
 
         }
@@ -497,19 +505,19 @@ module scenes {
                 if (this.isGrounded) {
                     if (this.keyboardControls.jump) {
                         this.velocity.y += 4000.0 * delta;
-                        if (this.player.position.y > 4) {
+                        if (this.player1.position.y > 4) {
                             this.isGrounded = false;
                         }
                     }
                 }
 
-                this.player.setDamping(0.7, 0.1);
+                this.player1.setDamping(0.7, 0.1);
                 // Changing player's rotation
-                this.player.setAngularVelocity(new Vector3(0, this.mouseControls.yaw, 0));
+                this.player1.setAngularVelocity(new Vector3(0, this.mouseControls.yaw, 0));
                 direction.addVectors(direction, this.velocity);
-                direction.applyQuaternion(this.player.quaternion);
-                if (Math.abs(this.player.getLinearVelocity().x) < 20 && Math.abs(this.player.getLinearVelocity().y) < 10) {
-                    this.player.applyCentralForce(direction);
+                direction.applyQuaternion(this.player1.quaternion);
+                if (Math.abs(this.player1.getLinearVelocity().x) < 20 && Math.abs(this.player1.getLinearVelocity().y) < 10) {
+                    this.player1.applyCentralForce(direction);
                 }
 
                 this.cameraLook();
@@ -523,18 +531,18 @@ module scenes {
                 this.prevTime = time;
             } // Controls Enabled ends
             else {
-                this.player.setAngularVelocity(new Vector3(0, 0, 0));
+                this.player1.setAngularVelocity(new Vector3(0, 0, 0));
             }
         }
 
 
         private addBridge(): void {
-            this.bridgeTexture = new THREE.TextureLoader().load('../../Assets/images/GravelCobble.jpg');
+            this.bridgeTexture = new THREE.TextureLoader().load('../../Assets/images/bridge.jpg');
             this.bridgeTexture.wrapS = THREE.RepeatWrapping;
             this.bridgeTexture.wrapT = THREE.RepeatWrapping;
             this.bridgeTexture.repeat.set(1, 1);
 
-            this.bridgeTextureNormal = new THREE.TextureLoader().load('../../Assets/images/GravelCobbleNormal.png');
+            this.bridgeTextureNormal = new THREE.TextureLoader().load('../../Assets/images/bridgeNormal.png');
             this.bridgeTextureNormal.wrapS = THREE.RepeatWrapping;
             this.bridgeTextureNormal.wrapT = THREE.RepeatWrapping;
             this.bridgeTextureNormal.repeat.set(1, 1);
@@ -562,92 +570,125 @@ module scenes {
             this.minePhysicsMaterial = Physijs.createMaterial(this.mineMaterial, 0);
 
 
-            this.bridge1Geometry = new BoxGeometry(12.087, 0.213, 3.555); //For Large
-            this.bridge2Geometry = new BoxGeometry(7.110, 0.216, 3.596); //For small
-            this.bridge3Geometry = new BoxGeometry(12.010, 0.216, 3.596); //For medium
-            this.bridge4Geometry = new BoxGeometry(12.010, 6.125, 0.216); //For wider
+            this.bridge1Geometry = new BoxGeometry(40, 0.2, 4); //For Large
+            this.bridge2Geometry = new BoxGeometry(14, 0.2, 4); //For small
+            this.bridge3Geometry = new BoxGeometry(20, 0.2, 4); //For medium
+            this.bridge4Geometry = new BoxGeometry(14, 0.2, 8); //For wider
 
 
-
-            this.bridge1 = new Physijs.ConvexMesh(this.bridge1Geometry, this.bridgePhysicsMaterial, 0);
-            this.bridge1.position.set(2.07179, -0.17666, -19.32231);
-            this.bridge1.rotation.set(5.811946, 0, 0);
+            this.bridge1 = new Physijs.ConvexMesh(this.bridge3Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge1.position.set(0, 0, 59);
             this.bridge1.receiveShadow = true;
             this.bridge1.name = "Bridge";
             this.add(this.bridge1);
 
-            this.bridge2 = new Physijs.ConvexMesh(this.bridge1Geometry, this.bridgePhysicsMaterial, 0);
-            this.bridge2.position.set(2.07179, 1.22933, -16.08855);
-            this.bridge2.rotation.set(5.934119, 0, 0);
+            this.bridge2 = new Physijs.ConvexMesh(this.bridge2Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge2.position.set(-13, 0, 44);
             this.bridge2.receiveShadow = true;
             this.bridge2.name = "Bridge";
             this.add(this.bridge2);
 
-            this.bridge3 = new Physijs.ConvexMesh(this.bridge2Geometry, this.minePhysicsMaterial, 0);
-            this.bridge3.position.set(4.56390, 2.24249, -12.67325);
-            this.bridge3.rotation.set(6.056293, 0, 0);
+            this.bridge3 = new Physijs.ConvexMesh(this.bridge4Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge3.position.set(5, 0, 29);
+            // this.bridge3.rotation.set(6.056293, 0, 0);
             this.bridge3.receiveShadow = true;
             this.bridge3.name = "Bridge";
             this.add(this.bridge3);
 
-            this.bridge4 = new Physijs.ConvexMesh(this.bridge2Geometry, this.bridgePhysicsMaterial, 0);
-            this.bridge4.position.set(-0.23483, 2.81194, -9.21924);
-            this.bridge4.rotation.set(6.178465, 0, 0);
+            this.bridge4 = new Physijs.ConvexMesh(this.bridge2Geometry, this.minePhysicsMaterial, 0);
+            this.bridge4.position.set(13, 0, 13);
+            // this.bridge4.rotation.set(6.178465, 0, 0);
             this.bridge4.receiveShadow = true;
             this.bridge4.name = "DeathPlane";
             this.add(this.bridge4);
 
-            this.bridge5 = new Physijs.ConvexMesh(this.bridge3Geometry, this.bridgePhysicsMaterial, 0);
-            this.bridge5.position.set(0.54932, 2.96600, -5.66376);
-            this.bridge5.rotation.set(6.300639, 0, 0);
+            this.bridge5 = new Physijs.ConvexMesh(this.bridge2Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge5.position.set(-13, 0, 13);
+            // this.bridge5.rotation.set(6.300639, 0, 0);
             this.bridge5.receiveShadow = true;
             this.bridge5.name = "Bridge";
             this.add(this.bridge5);
 
-            this.bridge6 = new Physijs.ConvexMesh(this.bridge4Geometry, this.bridgePhysicsMaterial, 0);
-            this.bridge6.position.set(0.54932, 2.94681, 4.06235 - 5);
-            this.bridge6.rotation.set(4.729842, 0, 0);
+            this.bridge6 = new Physijs.ConvexMesh(this.bridge3Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge6.position.set(0, 0, 9);
+            //  this.bridge6.rotation.set(4.729842, 0, 0);
             this.bridge6.receiveShadow = true;
             this.bridge6.name = "Bridge";
             this.add(this.bridge6);
 
-            this.bridge7 = new Physijs.ConvexMesh(this.bridge3Geometry, this.bridgePhysicsMaterial, 0);
-            this.bridge7.position.set(0.54872, 2.64996, 8.85714 - 4);
-            this.bridge7.rotation.set(6.422812, 0, 0);
+            this.bridge7 = new Physijs.ConvexMesh(this.bridge1Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge7.position.set(0, 0, 0);
+            //this.bridge7.rotation.set(6.422812, 0, 0);
             this.bridge7.receiveShadow = true;
             this.bridge7.name = "Bridge";
             this.add(this.bridge7);
 
-            this.bridge8 = new Physijs.ConvexMesh(this.bridge2Geometry, this.bridgePhysicsMaterial, 0);
-            this.bridge8.position.set(7.36864, 1.93148, 12.24713 - 4);
-            this.bridge8.rotation.set(6.544985, 0, 0);
+            this.bridge8 = new Physijs.ConvexMesh(this.bridge3Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge8.position.set(0, 0, -9);
+            // this.bridge8.rotation.set(6.544985, 0, 0);
             this.bridge8.receiveShadow = true;
             this.bridge8.name = "Bridge";
             this.add(this.bridge8);
 
-            this.bridge9 = new Physijs.ConvexMesh(this.bridge3Geometry, this.minePhysicsMaterial, 0);
-            this.bridge9.position.set(2.60339, 0.81724, 15.52883 - 4);
-            this.bridge9.rotation.set(6.667158, 0, 0);
+            this.bridge9 = new Physijs.ConvexMesh(this.bridge2Geometry, this.minePhysicsMaterial, 0);
+            this.bridge9.position.set(-13, 0, -13);
+            //  this.bridge9.rotation.set(6.667158, 0, 0);
             this.bridge9.receiveShadow = true;
             this.bridge9.name = "DeathPlane";
             this.add(this.bridge9);
 
-            this.bridge10 = new Physijs.ConvexMesh(this.bridge3Geometry, this.bridgePhysicsMaterial, 0);
-            this.bridge10.position.set(2.03624, -0.37398, 18.72818 - 4);
-            this.bridge10.rotation.set(6.60852, 0, 0);
+            this.bridge10 = new Physijs.ConvexMesh(this.bridge2Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge10.position.set(13, 0, -13);
+            // this.bridge10.rotation.set(6.60852, 0, 0);
             this.bridge10.receiveShadow = true;
             this.bridge10.name = "Bridge";
             this.add(this.bridge10);
 
+            this.bridge11 = new Physijs.ConvexMesh(this.bridge4Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge11.position.set(-5, 0, -29);
+            // this.bridge11.rotation.set(6.60852, 0, 0);
+            this.bridge11.receiveShadow = true;
+            this.bridge11.name = "Bridge";
+            this.add(this.bridge11);
+
+            this.bridge12 = new Physijs.ConvexMesh(this.bridge2Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge12.position.set(13, 0, -44);
+            //  this.bridge12.rotation.set(6.60852, 0, 0);
+            this.bridge12.receiveShadow = true;
+            this.bridge12.name = "Bridge";
+            this.add(this.bridge12);
+
+            this.bridge13 = new Physijs.ConvexMesh(this.bridge3Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge13.position.set(0, 0, -59);
+            //  this.bridge13.rotation.set(6.60852, 0, 0);
+            this.bridge13.receiveShadow = true;
+            this.bridge13.name = "Bridge";
+            this.add(this.bridge13);
+            
+            this.bridge14 = new Physijs.ConvexMesh(this.bridge3Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge14.position.set(0, 0, 63);
+            //  this.bridge14.rotation.set(6.60852, 0, 0);
+            this.bridge14.receiveShadow = true;
+            this.bridge14.name = "Bridge";
+            this.add(this.bridge14);
+            
+            this.bridge15 = new Physijs.ConvexMesh(this.bridge3Geometry, this.bridgePhysicsMaterial, 0);
+            this.bridge15.position.set(0, 0, -63);
+            //  this.bridge15.rotation.set(6.60852, 0, 0);
+            this.bridge15.receiveShadow = true;
+            this.bridge15.name = "Bridge";
+            this.add(this.bridge15);
+
+
         }
 
         private addGround(): void {
-            this.groundTexture = new THREE.TextureLoader().load('../../Assets/images/GravelCobble.jpg');
+            this.groundTexture = new THREE.TextureLoader().load('../../Assets/images/grass.jpg');
             this.groundTexture.wrapS = THREE.RepeatWrapping;
             this.groundTexture.wrapT = THREE.RepeatWrapping;
             this.groundTexture.repeat.set(8, 8);
 
-            this.groundTextureNormal = new THREE.TextureLoader().load('../../Assets/images/GravelCobbleNormal.png');
+            this.groundTextureNormal = new THREE.TextureLoader().load('../../Assets/images/grassNormal.png');
             this.groundTextureNormal.wrapS = THREE.RepeatWrapping;
             this.groundTextureNormal.wrapT = THREE.RepeatWrapping;
             this.groundTextureNormal.repeat.set(8, 8);
@@ -657,19 +698,19 @@ module scenes {
             this.groundMaterial.bumpMap = this.groundTextureNormal;
             this.groundMaterial.bumpScale = 0.2;
 
-            this.groundGeometry = new BoxGeometry(40, 0.1, 40);
+            this.groundGeometry = new BoxGeometry(70, 0.1, 70);
             this.groundPhysicsMaterial = Physijs.createMaterial(this.groundMaterial, 0, 0);
 
             this.ground = new Physijs.ConvexMesh(this.groundGeometry, this.groundPhysicsMaterial, 0);
-            this.ground.position.set(-0.06, -0.98, -38.9);
+            this.ground.position.set(0, 0, 100);
             this.ground.receiveShadow = true;
-            this.ground.name = "Ground";
+            this.ground.name = "SavedGround";
             this.add(this.ground);
 
             this.ground1 = new Physijs.ConvexMesh(this.groundGeometry, this.groundPhysicsMaterial, 0);
-            this.ground1.position.set(-0.06, -0.85, 39.7 + -3);
+            this.ground1.position.set(0, 0, -100);
             this.ground1.receiveShadow = true;
-            this.ground1.name = "SavedGround";
+            this.ground1.name = "Ground";
             this.add(this.ground1);
 
             console.log("Added Ground to scene");
@@ -746,7 +787,7 @@ module scenes {
 
 
             // Collision Check with player
-            this.player.addEventListener('collision', function(eventObject) {
+            this.player1.addEventListener('collision', function (eventObject) {
                 if (eventObject.name === "Ground" || "Bridge") {
                     self.isGrounded = true;
                     createjs.Sound.play("land");
@@ -773,7 +814,7 @@ module scenes {
                         // Exit Pointer Lock
                         document.exitPointerLock();
                         self.children = []; // an attempt to clean up
-                        self.player.remove(camera);
+                        self.player1.remove(camera);
 
                         // Play the Game Over Scene
                         currentScene = config.Scene.OVER;
@@ -781,10 +822,10 @@ module scenes {
                     } else {
                         // otherwise reset my player and update Lives
                         self.livesLabel.text = "LIVES: " + livesValue;
-                        self.remove(self.player);
-                        self.player.position.set(-0.06, 10, -38.9);
-                        self.player.rotation.set(0, 3.14159, 0);
-                        self.add(self.player);
+                        self.remove(self.player1);
+                        self.player1.position.set(0, 10, -100);
+                        self.player1.rotation.set(0, 3.14159, 0);
+                        self.add(self.player1);
                     }
                 }
 
@@ -793,8 +834,8 @@ module scenes {
 
 
             camera.rotation.set(-0.45, 0, 0);
-            camera.position.set(0, 15, 10);
-            this.player.add(camera);
+            camera.position.set(0, 15, 20);
+            this.player1.add(camera);
 
         }
 

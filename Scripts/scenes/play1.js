@@ -142,11 +142,11 @@ var scenes;
             console.log("Added Ground to scene");
         };
         Play1.prototype.addBoundary1 = function () {
-            this.wallTexture = new THREE.TextureLoader().load('../../Assets/images/GravelCobble.jpg');
+            this.wallTexture = new THREE.TextureLoader().load('../../Assets/images/wall.jpg');
             this.wallTexture.wrapS = THREE.RepeatWrapping;
             this.wallTexture.wrapT = THREE.RepeatWrapping;
             this.wallTexture.repeat.set(2, 2);
-            this.wallTextureNormal = new THREE.TextureLoader().load('../../Assets/images/GravelCobbleNormal.png');
+            this.wallTextureNormal = new THREE.TextureLoader().load('../../Assets/images/wall.jpg');
             this.wallTextureNormal.wrapS = THREE.RepeatWrapping;
             this.wallTextureNormal.wrapT = THREE.RepeatWrapping;
             this.wallTextureNormal.repeat.set(4, 4);
